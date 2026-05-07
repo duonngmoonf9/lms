@@ -13,5 +13,24 @@ const getAccountAPI = () => {
     return axios.get(URL_BACKEND);
 }
 
-export { apiLogin, apiRegister, getAccountAPI };
+const apiGetMetaData = () => {
+    const URL_BACKEND = "/api/get-meta-data";
+    return axios.get(URL_BACKEND);
+}
+
+const apiCreateCourse = (data) => {
+    const URL_BACKEND = "/api/courses";
+    return axios.post(URL_BACKEND, data);
+}
+
+const apiGetCourse = (id) => {
+    const URL_BACKEND = "/api/courses/show/" + id;
+    return axios.get(URL_BACKEND);
+}
+const apiUpdateCourse = (id, data) => {
+    const URL_BACKEND = "/api/courses/update/" + id;
+    return axios.put(URL_BACKEND, data);
+}
+
+export { apiCreateCourse, apiGetCourse, apiGetMetaData, apiLogin, apiRegister, apiUpdateCourse, getAccountAPI };
 

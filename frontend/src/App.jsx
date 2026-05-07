@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ChangePass from './components/pages/account/ChangePass'
+import CreateCourses from './components/pages/account/courses/CreateCourses'
+import EditCourse from './components/pages/account/courses/EditCourse'
 import MyCourses from './components/pages/account/MyCourses'
 import WatchCourses from './components/pages/account/WatchCourses'
 import Courses from './components/pages/Courses'
@@ -45,6 +47,16 @@ function App() {
                     <Route path='/account/dashboard' element={
                         <RedirectLogin>
                             <Dashboard />
+                        </RedirectLogin>
+                    } />
+                    <Route path='/account/courses/create' element={
+                        <RedirectLogin>
+                            <CreateCourses />
+                        </RedirectLogin>
+                    } />
+                    <Route path='/account/courses/edit/:id' element={
+                        <RedirectLogin>
+                            <EditCourse />
                         </RedirectLogin>
                     } />
                 </Routes>
