@@ -19,7 +19,6 @@ const Login = () => {
                 user: res.user
             }
             localStorage.setItem('userInfo', JSON.stringify(userInfo));
-            console.log(">>>>>>>>>>>", res.user);
 
             setUser(res.user);
             toast.success(res.message);

@@ -15,4 +15,7 @@ Route::get('/user', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/courses', [CourseController::class, 'store']);
+    Route::get('/courses/show/{id}', [CourseController::class, 'show']);
+    Route::put('/courses/update/{id}', [CourseController::class, 'update']);
+    Route::get('/get-meta-data', [CourseController::class, 'metaData']);
 });
