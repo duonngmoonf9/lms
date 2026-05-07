@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Layout from "../../../common/Layout";
 import UserSidebar from "../../../common/UserSidebar";
 import { apiGetCourse, apiGetMetaData, apiUpdateCourse } from "../../../services/api.service";
+import Outcome from "./Outcome";
 
 const EditCourse = () => {
     const param = useParams();
@@ -192,7 +193,9 @@ const EditCourse = () => {
                                         </div>
                                     </form>
                                 </div>
-                                <div className="col-md-5"></div>
+                                <div className="col-md-5">
+                                    <Outcome />
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -32,5 +32,14 @@ const apiUpdateCourse = (id, data) => {
     return axios.put(URL_BACKEND, data);
 }
 
-export { apiCreateCourse, apiGetCourse, apiGetMetaData, apiLogin, apiRegister, apiUpdateCourse, getAccountAPI };
+const apiCreateOutcome = (data) => {
+    const URL_BACKEND = "/api/outcome/create";
+    return axios.post(URL_BACKEND, data);
+}
+const apiGetOutcomeOfCourse = (id) => {
+    const URL_BACKEND = "/api/outcomes/?course_id=" + id;
+    return axios.get(URL_BACKEND);
+}
+
+export { apiCreateCourse, apiCreateOutcome, apiGetCourse, apiGetMetaData, apiGetOutcomeOfCourse, apiLogin, apiRegister, apiUpdateCourse, getAccountAPI };
 
