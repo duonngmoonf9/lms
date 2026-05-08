@@ -6,6 +6,7 @@ import Layout from "../../../common/Layout";
 import UserSidebar from "../../../common/UserSidebar";
 import { apiGetCourse, apiGetMetaData, apiUpdateCourse } from "../../../services/api.service";
 import Outcome from "./Outcome";
+import Requirement from "./Requirement";
 
 const EditCourse = () => {
     const param = useParams();
@@ -195,6 +196,7 @@ const EditCourse = () => {
                                 </div>
                                 <div className="col-md-5">
                                     <Outcome />
+                                    <Requirement />
                                 </div>
                             </div>
                         </div>

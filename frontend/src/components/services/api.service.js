@@ -44,11 +44,27 @@ const apiUpdateOutcomeOfCourse = (data, id) => {
     const URL_BACKEND = "/api/outcome/update/" + id;
     return axios.put(URL_BACKEND, data);
 }
-
 const apiDeleteOutcome = (id) => {
     const URL_BACKEND = "/api/outcome/delete/" + id;
     return axios.delete(URL_BACKEND);
 }
 
-export { apiCreateCourse, apiCreateOutcome, apiDeleteOutcome, apiGetCourse, apiGetMetaData, apiGetOutcomeOfCourse, apiLogin, apiRegister, apiUpdateCourse, apiUpdateOutcomeOfCourse, getAccountAPI };
+const apiCreateRequirement = (data) => {
+    const URL_BACKEND = "/api/requirement/create";
+    return axios.post(URL_BACKEND, data);
+}
+const apiGetRequirementOfCourse = (id) => {
+    const URL_BACKEND = "/api/requirements/?course_id=" + id;
+    return axios.get(URL_BACKEND);
+}
+const apiUpdateRequirementOfCourse = (data, id) => {
+    const URL_BACKEND = "/api/requirement/update/" + id;
+    return axios.put(URL_BACKEND, data);
+}
+const apiDeleteRequirement = (id) => {
+    const URL_BACKEND = "/api/requirement/delete/" + id;
+    return axios.delete(URL_BACKEND);
+}
+
+export { apiCreateCourse, apiCreateOutcome, apiCreateRequirement, apiDeleteOutcome, apiDeleteRequirement, apiGetCourse, apiGetMetaData, apiGetOutcomeOfCourse, apiGetRequirementOfCourse, apiLogin, apiRegister, apiUpdateCourse, apiUpdateOutcomeOfCourse, apiUpdateRequirementOfCourse, getAccountAPI };
 
