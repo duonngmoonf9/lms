@@ -39,10 +39,11 @@ class OutcomeController extends Controller
     {
         //
         $validator = Validator::make($request->all(), [
-            'text' => "required",
+            'text' => "required|min:2",
             "course_id" => "required",
         ], [
             "text.required" => "truong nay la bat buoc",
+            "text.min" => "toi thieu 2 ky tu",
             "course_id.required" => "truong nay la bat buoc"
         ]);
         if ($validator->fails()) {
@@ -110,9 +111,10 @@ class OutcomeController extends Controller
             ], 404);
         }
         $validator = Validator::make($request->all(), [
-            'text' => "required"
+            'text' => "required|min:2",
         ], [
-            "text.required" => "truong nay la bat buoc"
+            "text.required" => "truong nay la bat buoc",
+            "text.min" => "toi thieu 2 ky tu",
         ]);
         if ($validator->fails()) {
             return response()->json([
