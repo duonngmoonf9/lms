@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('duration')->nullable();
             $table->string('video')->nullable();
             $table->text('description')->nullable();
-            $table->integer('sort_oder');
+            $table->integer('sort_order');
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });

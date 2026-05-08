@@ -5,9 +5,10 @@ import { BsPencilSquare } from "react-icons/bs";
 import { FaTrashAlt } from "react-icons/fa";
 import { MdDragIndicator } from "react-icons/md";
 import { Link, useParams } from "react-router-dom";
-import { apiCreateRequirement, apiDeleteRequirement, apiGetRequirementOfCourse } from "../../../services/api.service";
-
+import { apiCreateRequirement, apiDeleteRequirement, apiGetRequirementOfCourse, apiUpdateSortOrderRequirement } from "../../../services/api.service";
 import UpdateRequirement from "./UpdateRequirement";
+
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 
 const Requirement = () => {
     const [loading, setLoading] = useState(false);
@@ -72,6 +73,26 @@ const Requirement = () => {
         }
     }
 
+    const handleDragEnd = (result) => {
+        if (!result.destination) return;
+        const reorderedItems = Array.from(requirements);
+        const [movedItem] = reorderedItems.splice(result.source.index, 1);
+        reorderedItems.splice(result.destination.index, 0, movedItem);
+        setRequirements(reorderedItems);
+        saveOrder(reorderedItems);
+    };
+
+    const saveOrder = async (updateSortOrder) => {
+        const res = await apiUpdateSortOrderRequirement({ dataUpdate: updateSortOrder });
+        if (res.status) {
+            toast.success(res.message);
+        } else {
+            toast.error(res.message);
+        }
+
+    }
+
+
     useEffect(() => {
         getRequirement();
     }, [])
@@ -103,29 +124,50 @@ const Requirement = () => {
                     </form>
 
                     {/* view requirement */}
-                    {requirements && requirements.map(item => {
-                        return (
-                            <div key={"requirement-" + item.id} className="card shadow-lg mb-1">
-                                <div className='card-body p-2 d-flex'>
-                                    <div><MdDragIndicator /></div>
-                                    <div className='d-flex justify-content-between w-100'>
-                                        <div className="ps-2">
-                                            {item.text}
-                                        </div>
-                                        <div className='d-flex'>
-                                            <Link onClick={() => handleShow(item)} className='text-primary me-1'>
-                                                <BsPencilSquare />
-                                            </Link>
-                                            <Link onClick={() => handleDelete(item.id)} className='text-danger'>
-                                                <FaTrashAlt />
-                                            </Link>
-                                        </div>
-                                    </div>
+                    <DragDropContext onDragEnd={handleDragEnd} >
+                        <Droppable droppableId="list">
+                            {(provided) => (
+                                <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
+                                    {
+                                        requirements && requirements.map((item, index) => (
+                                            <Draggable key={item.id} draggableId={`${item.id}`} index={index}>
 
+                                                {(provided) => (
+                                                    <div
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        {...provided.dragHandleProps}
+                                                        className="mt-2 border px-3 py-2 bg-white shadow-lg  rounded"
+                                                    >
+
+                                                        <div key={"requirement-" + item.id} className="card shadow-lg mb-1">
+                                                            <div className='card-body p-2 d-flex'>
+                                                                <div><MdDragIndicator /></div>
+                                                                <div className='d-flex justify-content-between w-100'>
+                                                                    <div className="ps-2">
+                                                                        {item.text}
+                                                                    </div>
+                                                                    <div className='d-flex'>
+                                                                        <Link onClick={() => handleShow(item)} className='text-primary me-1'>
+                                                                            <BsPencilSquare />
+                                                                        </Link>
+                                                                        <Link onClick={() => handleDelete(item.id)} className='text-danger'>
+                                                                            <FaTrashAlt />
+                                                                        </Link>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                        ))}
+                                    {provided.placeholder}
                                 </div>
-                            </div>
-                        )
-                    })}
+                            )}
+                        </Droppable>
+                    </DragDropContext>
 
                 </div>
             </div>

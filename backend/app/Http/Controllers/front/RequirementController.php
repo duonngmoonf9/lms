@@ -14,7 +14,7 @@ class RequirementController extends Controller
     //
     public function index(Request $request)
     {
-        $requirement = Requirement::where('course_id', $request->course_id)->get();
+        $requirement = Requirement::where('course_id', $request->course_id)->orderBy('sort_order', "ASC")->get();
         return response()->json([
             "status" => true,
             "code" => 200,
@@ -58,7 +58,7 @@ class RequirementController extends Controller
 
             $requirement->course_id = $request->course_id;
             $requirement->text = $request->text;
-            $requirement->sort_oder = 1000;
+            $requirement->sort_order = 1000;
             $requirement->save();
             DB::commit();
             return response()->json([
@@ -181,5 +181,28 @@ class RequirementController extends Controller
                 "message" => "error delete requirement"
             ], 401);
         }
+    }
+
+
+    public function sortOrderRequirement(Request $request)
+    {
+        if (!empty($request->dataUpdate)) {
+            foreach ($request->dataUpdate as $key => $requirement) {
+                Log::info("Gia tri cua key la: " . $key);
+                Requirement::where('id', $requirement['id'])->update(['sort_order' => $key]);
+            }
+
+            return response()->json([
+                "status" => true,
+                "code" => 200,
+                "data" => $request->dataUpdate,
+                "message" => "Update sort-order requirement successfully"
+            ], 200);
+        }
+        return response()->json([
+            "status" => false,
+            "code" => 404,
+            "message" => "Update sort-order requirement not found"
+        ], 404);
     }
 }
