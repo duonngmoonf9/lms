@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->foreignId('course_id')->constrained()->onDelete('cascade');
-            $table->integer('sort_oder');
+            $table->integer('sort_order');
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });

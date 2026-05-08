@@ -26,10 +26,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/outcome/create', [OutcomeController::class, 'store']);
     Route::put('/outcome/update/{id}', [OutcomeController::class, 'update']);
     Route::delete('/outcome/delete/{id}', [OutcomeController::class, 'destroy']);
+    Route::patch('/outcome/update/sort-order', [OutcomeController::class, 'sortOrderOutcome']);
 
     //requirement
     Route::get('/requirements', [RequirementController::class, 'index']);
     Route::post('/requirement/create', [RequirementController::class, 'store']);
     Route::put('/requirement/update/{id}', [RequirementController::class, 'update']);
     Route::delete('/requirement/delete/{id}', [RequirementController::class, 'destroy']);
+    Route::patch('/requirement/update/sort-order', [RequirementController::class, 'sortOrderRequirement']);
 });

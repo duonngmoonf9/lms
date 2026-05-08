@@ -16,7 +16,7 @@ class OutcomeController extends Controller
      */
     public function index(Request $request)
     {
-        $outcome = Outcome::where('course_id', $request->course_id)->get();
+        $outcome = Outcome::where('course_id', $request->course_id)->orderBy('sort_order', "ASC")->get();
         return response()->json([
             "status" => true,
             "code" => 200,
@@ -60,7 +60,7 @@ class OutcomeController extends Controller
 
             $outcome->course_id = $request->course_id;
             $outcome->text = $request->text;
-            $outcome->sort_oder = 1000;
+            $outcome->sort_order = 1000;
             $outcome->save();
             DB::commit();
             return response()->json([
@@ -183,5 +183,27 @@ class OutcomeController extends Controller
                 "message" => "error delete outcome"
             ], 401);
         }
+    }
+
+    public function sortOrderOutcome(Request $request)
+    {
+        if (!empty($request->outcomes)) {
+            foreach ($request->outcomes as $key => $outcome) {
+                Log::info("Gia tri cua key la: " . $key);
+                Outcome::where('id', $outcome['id'])->update(['sort_order' => $key]);
+            }
+
+            return response()->json([
+                "status" => true,
+                "code" => 200,
+                "data" => $request->outcomes,
+                "message" => "Update sort-order outcome successfully"
+            ], 200);
+        }
+        return response()->json([
+            "status" => false,
+            "code" => 404,
+            "message" => "Update sort-order outcome not found"
+        ], 404);
     }
 }
