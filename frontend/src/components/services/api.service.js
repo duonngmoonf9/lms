@@ -32,5 +32,23 @@ const apiUpdateCourse = (id, data) => {
     return axios.put(URL_BACKEND, data);
 }
 
-export { apiCreateCourse, apiGetCourse, apiGetMetaData, apiLogin, apiRegister, apiUpdateCourse, getAccountAPI };
+const apiCreateOutcome = (data) => {
+    const URL_BACKEND = "/api/outcome/create";
+    return axios.post(URL_BACKEND, data);
+}
+const apiGetOutcomeOfCourse = (id) => {
+    const URL_BACKEND = "/api/outcomes/?course_id=" + id;
+    return axios.get(URL_BACKEND);
+}
+const apiUpdateOutcomeOfCourse = (data, id) => {
+    const URL_BACKEND = "/api/outcome/update/" + id;
+    return axios.put(URL_BACKEND, data);
+}
+
+const apiDeleteOutcome = (id) => {
+    const URL_BACKEND = "/api/outcome/delete/" + id;
+    return axios.delete(URL_BACKEND);
+}
+
+export { apiCreateCourse, apiCreateOutcome, apiDeleteOutcome, apiGetCourse, apiGetMetaData, apiGetOutcomeOfCourse, apiLogin, apiRegister, apiUpdateCourse, apiUpdateOutcomeOfCourse, getAccountAPI };
 
