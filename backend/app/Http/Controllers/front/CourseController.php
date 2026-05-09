@@ -7,13 +7,17 @@ use App\Models\Category;
 use App\Models\Course;
 use App\Models\Languages;
 use App\Models\Level;
+use App\Traits\StorageImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
+use function PHPUnit\Framework\isNull;
+
 class CourseController extends Controller
 {
+    use StorageImage;
     //
     public function index() {}
 
@@ -149,6 +153,70 @@ class CourseController extends Controller
                 "code" => 401,
                 "message" => "Update course error",
             ], 401);
+        }
+    }
+
+    public function uploadImage($id, Request $request)
+    {
+        $course = Course::find($id);
+        if (is_null($course)) {
+            return response()->json([
+                "status" => false,
+                "code" => 404,
+                "message" => "course not found",
+            ], 404);
+        }
+        $validator = Validator::make($request->all(), [
+            "image" => "required|mimes:png,jpg,jpeg"
+        ], [
+            "image.required" => "Can chon 1 hinh anh",
+            "image.mimes" => "khong dung dinh dang anh"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "code" => 400,
+                "message" => "field error",
+                "errors" => $validator->errors()
+            ], 400);
+        }
+        try {
+            DB::beginTransaction();
+            $image = $request->image;
+
+            $dataFile = $this->storageImageTraitUpload($image, 'course', $course->title);
+            if (!empty($dataFile)) {
+                if ($course->image_path !== '') {
+                    //delete image origin
+                    $this->fileDelete($course->image_path);
+
+                    //delete image small
+                    $dir = dirname($course->image_path);
+                    $fileName = basename($course->image_path);
+                    $smallPath = $dir . '/small/' . $fileName;
+                    $this->fileDelete($smallPath);
+                }
+                $this->resizeImage($dataFile['file_path']);
+                $course->image = $dataFile['file_name'];
+                $course->image_path = $dataFile['file_path'];
+                $course->save();
+            }
+            DB::commit();
+            return response()->json([
+                "status" => true,
+                "code" => 200,
+                "data" => $dataFile,
+                "message" => "upload image successfully",
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("message : " . $e->getMessage() . "------------------ line: " . $e->getLine());
+            return response()->json([
+                "status" => false,
+                "code" => 400,
+                "message" => "upload image error",
+            ], 400);
         }
     }
 }

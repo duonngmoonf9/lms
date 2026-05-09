@@ -5,10 +5,17 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Layout from "../../../common/Layout";
 import UserSidebar from "../../../common/UserSidebar";
 import { apiGetCourse, apiGetMetaData, apiUpdateCourse } from "../../../services/api.service";
+import EditCover from "./EditCover";
 import Outcome from "./Outcome";
 import Requirement from "./Requirement";
 
 const EditCourse = () => {
+    const [categories, setCategories] = useState([]);
+    const [languages, setLanguage] = useState([]);
+    const [levels, setLevel] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [course, setCourse] = useState([]);
+
     const param = useParams();
     const { handleSubmit, register, formState: { errors }, setError, reset } = useForm({
         defaultValues: async () => {
@@ -24,16 +31,14 @@ const EditCourse = () => {
                     price: res.data.price,
                     cross_price: res.data.cross_price,
                 })
+                setCourse(res.data);
             } else {
 
             }
         }
     });
     const navigate = useNavigate();
-    const [categories, setCategories] = useState([]);
-    const [languages, setLanguage] = useState([]);
-    const [levels, setLevel] = useState([]);
-    const [loading, setLoading] = useState(false);
+
 
 
     const onSubmit = async (data) => {
@@ -197,6 +202,10 @@ const EditCourse = () => {
                                 <div className="col-md-5">
                                     <Outcome />
                                     <Requirement />
+                                    <EditCover
+                                        course={course}
+                                        setCourse={setCourse}
+                                    />
                                 </div>
                             </div>
                         </div>

@@ -31,6 +31,16 @@ const apiUpdateCourse = (id, data) => {
     const URL_BACKEND = "/api/courses/update/" + id;
     return axios.put(URL_BACKEND, data);
 }
+const apiUploadImage = (id, data, signal) => {
+    let config = {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+        signal: signal
+    }
+    const URL_BACKEND = "/api/courses/upload-image/" + id;
+    return axios.post(URL_BACKEND, data, config);
+}
 
 // outcome
 const apiCreateOutcome = (data) => {
@@ -76,5 +86,5 @@ const apiUpdateSortOrderRequirement = (data) => {
     return axios.patch(URL_BACKEND, data);
 }
 
-export { apiCreateCourse, apiCreateOutcome, apiCreateRequirement, apiDeleteOutcome, apiDeleteRequirement, apiGetCourse, apiGetMetaData, apiGetOutcomeOfCourse, apiGetRequirementOfCourse, apiLogin, apiRegister, apiUpdateCourse, apiUpdateOutcomeOfCourse, apiUpdateRequirementOfCourse, apiUpdateSortOrderOutcome, apiUpdateSortOrderRequirement, getAccountAPI };
+export { apiCreateCourse, apiCreateOutcome, apiCreateRequirement, apiDeleteOutcome, apiDeleteRequirement, apiGetCourse, apiGetMetaData, apiGetOutcomeOfCourse, apiGetRequirementOfCourse, apiLogin, apiRegister, apiUpdateCourse, apiUpdateOutcomeOfCourse, apiUpdateRequirementOfCourse, apiUpdateSortOrderOutcome, apiUpdateSortOrderRequirement, apiUploadImage, getAccountAPI };
 
