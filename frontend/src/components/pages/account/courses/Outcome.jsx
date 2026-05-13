@@ -22,7 +22,6 @@ const Outcome = () => {
 
     const handleClose = () => {
         setShowOutcome(false);
-
     }
     const handleShow = (item) => {
         setDetailOutcome(item)

@@ -86,5 +86,27 @@ const apiUpdateSortOrderRequirement = (data) => {
     return axios.patch(URL_BACKEND, data);
 }
 
-export { apiCreateCourse, apiCreateOutcome, apiCreateRequirement, apiDeleteOutcome, apiDeleteRequirement, apiGetCourse, apiGetMetaData, apiGetOutcomeOfCourse, apiGetRequirementOfCourse, apiLogin, apiRegister, apiUpdateCourse, apiUpdateOutcomeOfCourse, apiUpdateRequirementOfCourse, apiUpdateSortOrderOutcome, apiUpdateSortOrderRequirement, apiUploadImage, getAccountAPI };
+// chapter
+const apiCreateChapter = (data) => {
+    const URL_BACKEND = "/api/chapter/create";
+    return axios.post(URL_BACKEND, data);
+}
+const apiGetChapterOfCourse = (id) => {
+    const URL_BACKEND = "/api/chapters/?course_id=" + id;
+    return axios.get(URL_BACKEND);
+}
+const apiUpdateChapterOfCourse = (data, id) => {
+    const URL_BACKEND = "/api/chapter/update/" + id;
+    return axios.put(URL_BACKEND, data);
+}
+const apiDeleteChapter = (id) => {
+    const URL_BACKEND = "/api/chapter/delete/" + id;
+    return axios.delete(URL_BACKEND);
+}
+const apiUpdateSortOrderChapter = (data) => {
+    const URL_BACKEND = "/api/chapter/update/sort-order";
+    return axios.patch(URL_BACKEND, data);
+}
+
+export { apiCreateChapter, apiCreateCourse, apiCreateOutcome, apiCreateRequirement, apiDeleteChapter, apiDeleteOutcome, apiDeleteRequirement, apiGetChapterOfCourse, apiGetCourse, apiGetMetaData, apiGetOutcomeOfCourse, apiGetRequirementOfCourse, apiLogin, apiRegister, apiUpdateChapterOfCourse, apiUpdateCourse, apiUpdateOutcomeOfCourse, apiUpdateRequirementOfCourse, apiUpdateSortOrderChapter, apiUpdateSortOrderOutcome, apiUpdateSortOrderRequirement, apiUploadImage, getAccountAPI };
 
