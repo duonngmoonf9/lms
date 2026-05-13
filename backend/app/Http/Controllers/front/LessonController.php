@@ -43,6 +43,7 @@ class LessonController extends Controller
             "title.required" => "truong nay la bat buoc",
             "title.min" => "toi thieu 2 ky tu",
             "chapter_id.required" => "truong nay la bat buoc"
+
         ]);
         if ($validator->fails()) {
             return response()->json([
