@@ -68,7 +68,7 @@ class CourseController extends Controller
 
     public function show($id)
     {
-        $course = Course::find($id);
+        $course = Course::with('chapters')->find($id);
         if ($course === null) {
             return response()->json([
                 "status" => false,
@@ -206,7 +206,8 @@ class CourseController extends Controller
             return response()->json([
                 "status" => true,
                 "code" => 200,
-                "data" => $dataFile,
+                "data" => $course,
+                "data_image" => $dataFile,
                 "message" => "upload image successfully",
             ], 200);
         } catch (\Exception $e) {

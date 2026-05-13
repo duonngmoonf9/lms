@@ -23,4 +23,9 @@ class Course extends Model
         // Dùng hàm asset() để thêm domain thật (VD: http://localhost:8000/storage/...)
         return asset($smallPath);
     }
+
+    public function chapters()
+    {
+        return $this->hasMany(Chapter::class);
+    }
 }
