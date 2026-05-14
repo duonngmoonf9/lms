@@ -4,6 +4,7 @@ namespace App\Http\Controllers\front;
 
 use App\Http\Controllers\Controller;
 use App\Models\Lesson;
+use App\Traits\StorageImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 class LessonController extends Controller
 {
     //
+    use StorageImage;
     public function index(Request $request)
     {
         $lesson = Lesson::where('chapter_id', $request->chapter_id)->orderBy('sort_order', "ASC")->get();
@@ -222,5 +224,63 @@ class LessonController extends Controller
             "code" => 404,
             "message" => "Update sort-order lesson not found"
         ], 404);
+    }
+
+    public function uploadVideo($id, Request $request)
+    {
+        $lesson = Lesson::find($id);
+        if (is_null($lesson)) {
+            return response()->json([
+                "status" => false,
+                "code" => 404,
+                "message" => "lesson not found",
+            ], 404);
+        }
+        $validator = Validator::make($request->all(), [
+            "video" => "required|mimes:mp4"
+        ], [
+            "video.required" => "Can chon 1 video",
+            "video.mimes" => "khong dung dinh dang video"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => false,
+                "code" => 400,
+                "message" => "field error",
+                "errors" => $validator->errors()
+            ], 400);
+        }
+        try {
+            DB::beginTransaction();
+            $video = $request->video;
+
+            $dataFile = $this->storageVideoTraitUpload($video, 'lesson', $lesson->title);
+            if (!empty($dataFile)) {
+                if ($lesson->video_path !== '') {
+                    //delete video origin
+                    $this->fileDelete($lesson->video_path);
+                }
+                $lesson->video = $dataFile['file_name'];
+                $lesson->video_path = $dataFile['file_path'];
+                $lesson->save();
+            }
+            DB::commit();
+            return response()->json([
+                "status" => true,
+                "code" => 200,
+                "data" => $lesson,
+                "data_video" => $dataFile,
+                "message" => "upload video successfully",
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("message : " . $e->getMessage() . "------------------ line: " . $e->getLine());
+            return response()->json([
+                "status" => false,
+                "code" => 400,
+                "message" => "upload video error",
+            ], 400);
+        }
     }
 }

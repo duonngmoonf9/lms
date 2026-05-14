@@ -27,6 +27,23 @@ trait StorageImage
         return null;
     }
 
+    public function storageVideoTraitUpload($fileRequest, $folderName, $foderChildren)
+    {
+        $nameExtension = ['mp4'];
+        $ext = strtolower($fileRequest->getClientOriginalExtension());
+        if (in_array($ext, $nameExtension)) {
+            $nameOrigin = $fileRequest->getClientOriginalName();
+            $nameNew = strtotime('now') . '-' . uniqid() . '.' . $ext;
+            $filePath = $fileRequest->storeAs($folderName . '/' . (Auth::id() ?? 'guest') . '/' . str::slug($foderChildren), $nameNew, 'public');
+            $dataFile = [
+                'file_name' => $nameOrigin,
+                'file_path' => Storage::url($filePath) //chuyển đôi chữ public thành Storage
+            ];
+            return $dataFile;
+        }
+        return null;
+    }
+
     public function fileDelete($filePath)
     {
         $filePath_str = str_replace('/storage', '', $filePath);

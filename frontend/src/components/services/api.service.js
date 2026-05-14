@@ -133,6 +133,16 @@ const apiUpdateSortOrderLesson = (data) => {
     const URL_BACKEND = "/api/lesson/update/sort-order";
     return axios.patch(URL_BACKEND, data);
 }
+const apiUploadVideo = (id, data, signal) => {
+    let config = {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+        signal: signal
+    }
+    const URL_BACKEND = "/api/lesson/upload-video/" + id;
+    return axios.post(URL_BACKEND, data, config);
+}
 
-export { apiCreateChapter, apiCreateCourse, apiCreateLesson, apiCreateOutcome, apiCreateRequirement, apiDeleteChapter, apiDeleteLesson, apiDeleteOutcome, apiDeleteRequirement, apiGetChapterOfCourse, apiGetCourse, apiGetLesson, apiGetLessonOfCourse, apiGetMetaData, apiGetOutcomeOfCourse, apiGetRequirementOfCourse, apiLogin, apiRegister, apiUpdateChapterOfCourse, apiUpdateCourse, apiUpdateLessonOfCourse, apiUpdateOutcomeOfCourse, apiUpdateRequirementOfCourse, apiUpdateSortOrderChapter, apiUpdateSortOrderLesson, apiUpdateSortOrderOutcome, apiUpdateSortOrderRequirement, apiUploadImage, getAccountAPI };
+export { apiCreateChapter, apiCreateCourse, apiCreateLesson, apiCreateOutcome, apiCreateRequirement, apiDeleteChapter, apiDeleteLesson, apiDeleteOutcome, apiDeleteRequirement, apiGetChapterOfCourse, apiGetCourse, apiGetLesson, apiGetLessonOfCourse, apiGetMetaData, apiGetOutcomeOfCourse, apiGetRequirementOfCourse, apiLogin, apiRegister, apiUpdateChapterOfCourse, apiUpdateCourse, apiUpdateLessonOfCourse, apiUpdateOutcomeOfCourse, apiUpdateRequirementOfCourse, apiUpdateSortOrderChapter, apiUpdateSortOrderLesson, apiUpdateSortOrderOutcome, apiUpdateSortOrderRequirement, apiUploadImage, apiUploadVideo, getAccountAPI };
 

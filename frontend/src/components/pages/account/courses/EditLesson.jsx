@@ -9,11 +9,13 @@ import Select from "react-select";
 import Layout from "../../../common/Layout";
 import UserSidebar from "../../../common/UserSidebar";
 import { apiGetChapterOfCourse, apiGetCourse, apiGetLesson, apiUpdateLessonOfCourse } from "../../../services/api.service";
+import LessonVideo from './LessonVideo';
 
 const EditLesson = ({ placeholder }) => {
     const [chapters, setChapters] = useState([]);
     const [loading, setLoading] = useState(false);
     const [course, setCourse] = useState([]);
+    const [lesson, setLesson] = useState([]);
     const [description, setDescription] = useState('');
 
     const editor = useRef(null);
@@ -24,8 +26,9 @@ const EditLesson = ({ placeholder }) => {
         defaultValues: async () => {
             const res = await apiGetLesson(params.id);
             if (res.status) {
-                // dinh nghia gia tri default khi load
+                setLesson(res.data)
 
+                // dinh nghia gia tri default khi load
                 reset({
                     title: res.data.title,
                     chapter_id: res.data.chapter_id,
@@ -103,9 +106,11 @@ const EditLesson = ({ placeholder }) => {
     const config = useMemo(
         () => ({
             readonly: false, // all options from https://xdsoft.net/jodit/docs/,
-            placeholder: placeholder || 'Start typings...'
+            placeholder: (description && description !== '<p><br></p>')
+                ? ''
+                : (placeholder || 'Start typings...')
         }),
-        [placeholder]
+        [placeholder, description]
     );
 
     return (
@@ -229,7 +234,10 @@ const EditLesson = ({ placeholder }) => {
                                     </form>
                                 </div>
                                 <div className="col-md-5">
-
+                                    <LessonVideo
+                                        lesson={lesson}
+                                        setLesson={setLesson}
+                                    />
                                 </div>
                             </div>
                         </div>

@@ -26,7 +26,7 @@ const EditCover = ({ course, setCourse }) => {
                     name="image"
 
                     // Đoạn text giao diện bạn hỏi nằm ở ngay đây:
-                    labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+                    labelIdle='Drag & Drop your files or <span className="filepond--label-action">Browse</span>'
 
                     server={{
                         process: (fieldName, file, metadata, load, error, progress, abort) => {

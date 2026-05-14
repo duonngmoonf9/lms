@@ -24,7 +24,7 @@ const Layout = ({ children }) => {
                     >
                         <AiOutlineLoading3Quarters
                             className="loaderIcon"
-                            style={{ fontSize: 48, color: "red" }} // <-- Thêm màu đỏ để dễ nhìn
+                            style={{ fontSize: 48, color: "#1da599" }} // <-- Thêm màu đỏ để dễ nhìn
                         />
                     </div>
                     :
