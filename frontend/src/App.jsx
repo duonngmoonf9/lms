@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ChangePass from './components/pages/account/ChangePass'
 import CreateCourses from './components/pages/account/courses/CreateCourses'
 import EditCourse from './components/pages/account/courses/EditCourse'
+import EditLesson from './components/pages/account/courses/EditLesson'
 import MyCourses from './components/pages/account/MyCourses'
 import WatchCourses from './components/pages/account/WatchCourses'
 import Courses from './components/pages/Courses'
@@ -57,6 +58,11 @@ function App() {
                     <Route path='/account/courses/edit/:id' element={
                         <RedirectLogin>
                             <EditCourse />
+                        </RedirectLogin>
+                    } />
+                    <Route path='/account/lesson-edit/:idCourse/:id' element={
+                        <RedirectLogin>
+                            <EditLesson />
                         </RedirectLogin>
                     } />
                 </Routes>

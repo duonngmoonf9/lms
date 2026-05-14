@@ -5,16 +5,27 @@ import Footer from "./Footer";
 import Header from "./Header";
 
 const Layout = ({ children }) => {
-    const { loading } = useContext(AuthContext);
-
+    const { loadingPage } = useContext(AuthContext);
+    console.log("Trạng thái loading nhận được:", loadingPage);
     return (
         <>
 
             {
-                loading == true ?
-                    <div className="loader" style={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>
-                        <p>Loading Data</p>
-                        <AiOutlineLoading3Quarters className="loaderIcon" style={{ fontSize: 48, }} />
+                loadingPage == true ?
+                    <div
+                        className="loader"
+                        style={{
+                            position: "fixed",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%,-50%)",
+                            zIndex: 99999 // <-- Thêm cái này để nó đè lên mọi thứ
+                        }}
+                    >
+                        <AiOutlineLoading3Quarters
+                            className="loaderIcon"
+                            style={{ fontSize: 48, color: "red" }} // <-- Thêm màu đỏ để dễ nhìn
+                        />
                     </div>
                     :
                     <>

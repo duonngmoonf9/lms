@@ -108,5 +108,31 @@ const apiUpdateSortOrderChapter = (data) => {
     return axios.patch(URL_BACKEND, data);
 }
 
-export { apiCreateChapter, apiCreateCourse, apiCreateOutcome, apiCreateRequirement, apiDeleteChapter, apiDeleteOutcome, apiDeleteRequirement, apiGetChapterOfCourse, apiGetCourse, apiGetMetaData, apiGetOutcomeOfCourse, apiGetRequirementOfCourse, apiLogin, apiRegister, apiUpdateChapterOfCourse, apiUpdateCourse, apiUpdateOutcomeOfCourse, apiUpdateRequirementOfCourse, apiUpdateSortOrderChapter, apiUpdateSortOrderOutcome, apiUpdateSortOrderRequirement, apiUploadImage, getAccountAPI };
+// lesson
+const apiGetLesson = (id) => {
+    const URL_BACKEND = "/api/lessons/show/" + id;
+    return axios.get(URL_BACKEND);
+}
+const apiCreateLesson = (data) => {
+    const URL_BACKEND = "/api/lesson/create";
+    return axios.post(URL_BACKEND, data);
+}
+const apiGetLessonOfCourse = (id) => {
+    const URL_BACKEND = "/api/lessons/?course_id=" + id;
+    return axios.get(URL_BACKEND);
+}
+const apiUpdateLessonOfCourse = (data, id) => {
+    const URL_BACKEND = "/api/lesson/update/" + id;
+    return axios.put(URL_BACKEND, data);
+}
+const apiDeleteLesson = (id) => {
+    const URL_BACKEND = "/api/lesson/delete/" + id;
+    return axios.delete(URL_BACKEND);
+}
+const apiUpdateSortOrderLesson = (data) => {
+    const URL_BACKEND = "/api/lesson/update/sort-order";
+    return axios.patch(URL_BACKEND, data);
+}
+
+export { apiCreateChapter, apiCreateCourse, apiCreateLesson, apiCreateOutcome, apiCreateRequirement, apiDeleteChapter, apiDeleteLesson, apiDeleteOutcome, apiDeleteRequirement, apiGetChapterOfCourse, apiGetCourse, apiGetLesson, apiGetLessonOfCourse, apiGetMetaData, apiGetOutcomeOfCourse, apiGetRequirementOfCourse, apiLogin, apiRegister, apiUpdateChapterOfCourse, apiUpdateCourse, apiUpdateLessonOfCourse, apiUpdateOutcomeOfCourse, apiUpdateRequirementOfCourse, apiUpdateSortOrderChapter, apiUpdateSortOrderLesson, apiUpdateSortOrderOutcome, apiUpdateSortOrderRequirement, apiUploadImage, getAccountAPI };
 

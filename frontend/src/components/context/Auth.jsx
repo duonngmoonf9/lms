@@ -4,14 +4,14 @@ import { getAccountAPI } from "../services/api.service";
 export const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loadingPage, setLoadingPage] = useState(true);
 
     useEffect(() => {
         const fetchUserInfo = async () => {
             // 1. Kiểm tra localStorage, nếu chưa từng đăng nhập thì không cần gọi API
             const storedUser = localStorage.getItem('userInfo');
             if (!storedUser) {
-                setLoading(false);
+                setLoadingPage(false);
                 return;
             }
 
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
             } catch (error) {
                 setUser(null);
             } finally {
-                setLoading(false); // Kết thúc quá trình loading
+                setLoadingPage(false); // Kết thúc quá trình loading
             }
         };
 
@@ -42,8 +42,8 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext value={{ user, setUser, loading, setLoading, logOut }}>
+        <AuthContext.Provider value={{ user, setUser, loadingPage, setLoadingPage, logOut }}>
             {children}
-        </AuthContext>
+        </AuthContext.Provider>
     )
 }

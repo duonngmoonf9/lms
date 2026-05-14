@@ -42,8 +42,7 @@ class LessonController extends Controller
         ], [
             "title.required" => "truong nay la bat buoc",
             "title.min" => "toi thieu 2 ky tu",
-            "chapter_id.required" => "truong nay la bat buoc"
-
+            "chapter_id.required" => "Truong nay la bat buoc"
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -60,6 +59,7 @@ class LessonController extends Controller
             $lesson->chapter_id = $request->chapter_id;
             $lesson->title = $request->title;
             $lesson->sort_order = 1000;
+            $lesson->status = $request->status;
             $lesson->save();
             DB::commit();
             return response()->json([
@@ -85,6 +85,19 @@ class LessonController extends Controller
     public function show(string $id)
     {
         //
+        $lesson = Lesson::find($id);
+        if ($lesson === null) {
+            return response()->json([
+                "status" => false,
+                "code" => 404,
+                "message" => "lesson not found",
+            ], 404);
+        }
+        return response()->json([
+            "status" => true,
+            "code" => 200,
+            "data" => $lesson,
+        ], 200);
     }
 
     /**
@@ -127,7 +140,12 @@ class LessonController extends Controller
             DB::beginTransaction();
 
 
+            $lesson->chapter_id  = $request->chapter_id;
             $lesson->title = $request->title;
+            $lesson->is_free_preview = $request->is_free_preview === false ? 'no' : 'yes';
+            $lesson->duration = $request->duration;
+            $lesson->description = $request->description;
+            $lesson->status = $request->status;
             $lesson->save();
             DB::commit();
             return response()->json([

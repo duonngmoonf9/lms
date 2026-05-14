@@ -14,11 +14,11 @@ class ChapterController extends Controller
     //
     public function index(Request $request)
     {
-        $chapter = Chapter::where('course_id', $request->course_id)->orderBy('sort_order', "ASC")->get();
+        $chapters = Chapter::where('course_id', $request->course_id)->orderBy('sort_order', "ASC")->get();
         return response()->json([
             "status" => true,
             "code" => 200,
-            "data" => $chapter
+            "data" => $chapters
         ], 200);
     }
 
