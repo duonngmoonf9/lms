@@ -7,6 +7,7 @@ import 'filepond/dist/filepond.min.css';
 import { useState } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
 import toast from 'react-hot-toast';
+import { compressImageProcess } from '../../../../helpers/imageHelper';
 import { apiUploadImage } from '../../../services/api.service';
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview, FilePondPluginFileValidateType)
 
@@ -30,14 +31,18 @@ const EditCover = ({ course, setCourse }) => {
 
                     server={{
                         process: (fieldName, file, metadata, load, error, progress, abort) => {
-                            // 1. Đóng gói file vào FormData (Bắt buộc khi gửi file qua Axios)
-                            const formData = new FormData();
-                            formData.append(fieldName, file, file.name); // fieldName ở đây sẽ tự động lấy từ name="image"
 
                             const controller = new AbortController();
                             const uploadWithAxios = async () => {
                                 try {
-                                    // Gọi hàm apiUploadImage bạn đã định nghĩa
+
+                                    const compressedFile = await compressImageProcess(file, 1);
+
+                                    // 3. Đưa file ĐÃ NÉN vào FormData thay vì file gốc
+                                    const formData = new FormData();
+                                    formData.append(fieldName, compressedFile, compressedFile.name);
+
+                                    // Gọi API upload
                                     const res = await apiUploadImage(course.id, formData, controller.signal);
 
                                     if (res.status) {

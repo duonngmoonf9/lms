@@ -37,6 +37,13 @@ const chapterReducer = (state, action) => {
                 }
                 return chapter;
             })
+        case "DELETE_LESSON":
+            return state.map(chapter => {
+                return {
+                    ...chapter,
+                    lessons: chapter.lessons ? chapter.lessons.filter(lesson => lesson.id !== action.payload) : []
+                }
+            })
         default:
             throw new Error("no action");
     }
@@ -93,7 +100,7 @@ const Chapter = ({ course, param }) => {
         if (course.chapters) {
             dispatch({ type: "SET_CHAPTER", payload: course.chapters })
         }
-    }, [course])
+    }, [course?.chapters])
 
     const handleDelete = async (id) => {
         if (confirm("Ban co muon xoa khong")) {
@@ -103,7 +110,7 @@ const Chapter = ({ course, param }) => {
                 dispatch({ type: "DELETE_CHAPTER", payload: id })
                 handleClose()
             } else {
-                toast
+                toast.error(res.message)
             }
         }
     }
@@ -169,6 +176,7 @@ const Chapter = ({ course, param }) => {
                                                                     key={index}
                                                                     lesson={lesson}
                                                                     course={course}
+                                                                    dispatch={dispatch}
                                                                 />
                                                             )
                                                         })

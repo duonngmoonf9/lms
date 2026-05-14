@@ -6,7 +6,6 @@ import Header from "./Header";
 
 const Layout = ({ children }) => {
     const { loadingPage } = useContext(AuthContext);
-    console.log("Trạng thái loading nhận được:", loadingPage);
     return (
         <>
 

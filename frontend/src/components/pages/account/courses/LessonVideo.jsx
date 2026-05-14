@@ -11,6 +11,8 @@ import { apiUploadVideo } from '../../../services/api.service';
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview, FilePondPluginFileValidateType)
 const LessonVideo = ({ lesson, setLesson }) => {
     const [files, setFiles] = useState([]);
+    console.log(">>>>>>>>>>>>>>>lesson", lesson);
+
     return (
         <>
             <div className='card border-0 shadow-lg'>
@@ -78,11 +80,11 @@ const LessonVideo = ({ lesson, setLesson }) => {
                             },
                         }}
                     />
-                    <ReactPlayer
+                    {lesson.video_path_url && <ReactPlayer
                         width="100%"
                         // height="100%"
                         controls
-                        src={lesson.video_path_url} />
+                        src={lesson.video_path_url} />}
                 </div>
             </div>
         </>

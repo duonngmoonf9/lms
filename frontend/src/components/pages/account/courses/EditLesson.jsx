@@ -174,6 +174,17 @@ const EditLesson = ({ placeholder }) => {
                                                                     onChange={val => onChange(val ? val.value : '')}
                                                                     isClearable // Thêm nút [x] để xoá lựa chọn nếu cần
                                                                     className={errors.chapter_id ? 'is-invalid' : ''}
+                                                                    styles={{
+                                                                        control: (baseStyles) => ({
+                                                                            ...baseStyles,
+                                                                            // Nếu có lỗi thì viền màu đỏ (#dc3545), ngược lại giữ màu mặc định
+                                                                            borderColor: errors.chapter_id ? '#dc3545' : baseStyles.borderColor,
+                                                                            // Giữ viền đỏ ngay cả khi hover chuột vào
+                                                                            '&:hover': {
+                                                                                borderColor: errors.chapter_id ? '#dc3545' : baseStyles.borderColor
+                                                                            }
+                                                                        })
+                                                                    }}
                                                                 />
                                                             )}
                                                         />

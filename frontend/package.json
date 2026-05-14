@@ -13,6 +13,7 @@
     "@hello-pangea/dnd": "^18.0.1",
     "axios": "^1.16.0",
     "bootstrap": "^5.3.8",
+    "browser-image-compression": "^2.0.2",
     "filepond": "^4.32.12",
     "filepond-plugin-file-validate-type": "^1.2.9",
     "filepond-plugin-image-exif-orientation": "^1.0.11",

@@ -1,9 +1,21 @@
+import toast from "react-hot-toast";
 import { BsPencilSquare } from "react-icons/bs";
 import { FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { apiDeleteLesson } from "../../../services/api.service";
 
-const Lesson = ({ course, lesson }) => {
-
+const Lesson = ({ course, lesson, dispatch }) => {
+    const handleDelete = async (id) => {
+        if (confirm("Ban co muon xoa khong")) {
+            const res = await apiDeleteLesson(id);
+            if (res.status) {
+                toast.success(res.message);
+                dispatch({ type: "DELETE_LESSON", payload: id })
+            } else {
+                toast.error(res.message)
+            }
+        }
+    }
     return (
         <div className='card shadow px-3 py-2 mb-2'>
             <div className='row'>
@@ -24,7 +36,7 @@ const Lesson = ({ course, lesson }) => {
                         >
                             <BsPencilSquare />
                         </Link>
-                        <Link className='text-danger'>
+                        <Link onClick={() => handleDelete(lesson.id)} className='text-danger'>
                             <FaTrashAlt />
                         </Link>
                     </div>
