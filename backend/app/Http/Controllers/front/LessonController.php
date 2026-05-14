@@ -183,7 +183,10 @@ class LessonController extends Controller
         }
         try {
             DB::beginTransaction();
-
+            if ($lesson->video_path !== '') {
+                //delete all folder video origin
+                $this->folderDelete($lesson->video_path);
+            }
             $lesson->delete();
 
             DB::commit();

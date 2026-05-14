@@ -4,6 +4,7 @@ namespace App\Http\Controllers\front;
 
 use App\Http\Controllers\Controller;
 use App\Models\Chapter;
+use App\Traits\StorageImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 class ChapterController extends Controller
 {
     //
+    use StorageImage;
     public function index(Request $request)
     {
         $chapters = Chapter::where('course_id', $request->course_id)->orderBy('sort_order', "ASC")->get();
@@ -162,7 +164,12 @@ class ChapterController extends Controller
         }
         try {
             DB::beginTransaction();
-
+            foreach ($chapter->Lessons as $lesson) {
+                // 2. Kiểm tra nếu lesson có video thì tiến hành xóa folder
+                if (!empty($lesson->video_path)) {
+                    $this->folderDelete($lesson->video_path);
+                }
+            }
             $chapter->delete();
 
             DB::commit();

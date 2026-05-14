@@ -167,10 +167,11 @@ class CourseController extends Controller
             ], 404);
         }
         $validator = Validator::make($request->all(), [
-            "image" => "required|mimes:png,jpg,jpeg"
+            "image" => "required|mimes:png,jpg,jpeg,webp|dimensions:max_width=3000,max_height=3000"
         ], [
             "image.required" => "Can chon 1 hinh anh",
-            "image.mimes" => "khong dung dinh dang anh"
+            "image.mimes" => "khong dung dinh dang anh",
+            "image.dimensions" => "Kích thước phân giải của ảnh quá lớn (tối đa 3000x3000px). Vui lòng nén hoặc thu nhỏ ảnh trước khi tải lên."
         ]);
 
         if ($validator->fails()) {
@@ -181,6 +182,7 @@ class CourseController extends Controller
                 "errors" => $validator->errors()
             ], 400);
         }
+        $dataFile = null;
         try {
             DB::beginTransaction();
             $image = $request->image;
@@ -212,6 +214,17 @@ class CourseController extends Controller
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
+
+            // 2. DỌN DẸP RÁC Ổ CỨNG (Quan trọng)
+            if (!empty($dataFile)) {
+                // Xóa file gốc vừa được tạo ra
+                $this->fileDelete($dataFile['file_path']);
+                // Đề phòng trường hợp resize thành công nhưng lỗi ở lúc save() DB, xóa luôn ảnh small
+                $dir = dirname($dataFile['file_path']);
+                $fileName = basename($dataFile['file_path']);
+                $this->fileDelete($dir . '/small/' . $fileName);
+            }
+
             Log::error("message : " . $e->getMessage() . "------------------ line: " . $e->getLine());
             return response()->json([
                 "status" => false,

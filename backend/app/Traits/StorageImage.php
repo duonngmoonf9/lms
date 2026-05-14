@@ -57,6 +57,27 @@ trait StorageImage
         }
     }
 
+    public function folderDelete($filePath)
+    {
+        // Loại bỏ '/storage' để lấy đường dẫn tương đối
+        $filePath_str = str_replace('/storage', '', $filePath);
+
+        // Dùng dirname() để lấy tên thư mục chứa file
+        // Ví dụ: dirname('/lessons/1/video.mp4') sẽ trả về '/lessons/1'
+        $directoryPath = dirname($filePath_str);
+
+        try {
+            // Kiểm tra xem thư mục có tồn tại không
+            if (Storage::disk('public')->exists($directoryPath)) {
+                // Lệnh này sẽ xóa thư mục và TẤT CẢ các file, thư mục con bên trong nó
+                Storage::disk('public')->deleteDirectory($directoryPath);
+            }
+        } catch (\Exception $e) {
+            Log::error("Folder delete error: " . $e->getMessage() . '-----' . "line: " . $e->getLine());
+            return null;
+        }
+    }
+
     public function resizeImage($filePath, $folderName = 'small', $width = 750, $height = 450)
     {
         try {
