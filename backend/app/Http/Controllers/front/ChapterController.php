@@ -192,8 +192,8 @@ class ChapterController extends Controller
 
     public function sortOrderChapter(Request $request)
     {
-        if (!empty($request->chapters)) {
-            foreach ($request->chapters as $key => $chapter) {
+        if (!empty($request->dataUpdate)) {
+            foreach ($request->dataUpdate as $key => $chapter) {
                 Log::info("Gia tri cua key la: " . $key);
                 Chapter::where('id', $chapter['id'])->update(['sort_order' => $key]);
             }
@@ -201,7 +201,7 @@ class ChapterController extends Controller
             return response()->json([
                 "status" => true,
                 "code" => 200,
-                "data" => $request->chapters,
+                "data" => $request->dataUpdate,
                 "message" => "Update sort-order chapter successfully"
             ], 200);
         }

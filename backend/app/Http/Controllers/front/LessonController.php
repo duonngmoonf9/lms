@@ -209,8 +209,8 @@ class LessonController extends Controller
 
     public function sortOrderLesson(Request $request)
     {
-        if (!empty($request->lessons)) {
-            foreach ($request->lessons as $key => $lesson) {
+        if (!empty($request->dataUpdate)) {
+            foreach ($request->dataUpdate as $key => $lesson) {
                 Log::info("Gia tri cua key la: " . $key);
                 Lesson::where('id', $lesson['id'])->update(['sort_order' => $key]);
             }
@@ -218,7 +218,7 @@ class LessonController extends Controller
             return response()->json([
                 "status" => true,
                 "code" => 200,
-                "data" => $request->lessons,
+                "data" => $request->dataUpdate,
                 "message" => "Update sort-order lesson successfully"
             ], 200);
         }

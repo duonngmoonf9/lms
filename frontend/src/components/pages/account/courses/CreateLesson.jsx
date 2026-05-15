@@ -22,6 +22,8 @@ const CreateLesson = ({ showLesson, handleCloseLesson, chapters, dispatch }) => 
         }
         const res = await apiCreateLesson(formData);
         if (res.status) {
+            console.log(res.data);
+
             toast.success(res.message);
             reset();
             dispatch({ type: "ADD_LESSON", payload: res.data });

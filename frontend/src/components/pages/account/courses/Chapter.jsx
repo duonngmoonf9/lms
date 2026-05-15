@@ -1,12 +1,15 @@
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { useEffect, useReducer, useState } from "react";
 import { Accordion } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { FaRegHand } from "react-icons/fa6";
 import { IoIosAddCircle } from "react-icons/io";
 import { Link } from "react-router-dom";
-import { apiCreateChapter, apiDeleteChapter } from "../../../services/api.service";
+import { apiCreateChapter, apiDeleteChapter, apiUpdateSortOrderChapter } from "../../../services/api.service";
 import CreateLesson from "./CreateLesson";
 import Lesson from "./Lesson";
+import SortLesson from "./SortLesson";
 import UpdateChapter from "./UpdateChapter";
 
 const chapterReducer = (state, action) => {
@@ -16,26 +19,41 @@ const chapterReducer = (state, action) => {
         case "ADD_CHAPTER":
             return [...state, action.payload]
         case "UPDATE_CHAPTER":
-            return state.map(item => {
-                if (item.id === action.payload.id) {
-                    return action.payload
+            return state.map(chapter => {
+                if (chapter.id === action.payload.id) {
+                    return {
+                        ...chapter,       // Giữ lại toàn bộ data cũ (bao gồm mảng lessons)
+                        ...action.payload // Cập nhật đè data mới từ API trả về (ví dụ: title mới)
+                    }
                 }
-                return item
+                return chapter
             })
+        case "REORDER_CHAPTERS":
+            return action.payload;
         case "DELETE_CHAPTER":
-            return state.filter(item => item.id !== action.payload);
+            return state.filter(chapter => chapter.id !== action.payload);
+
+
 
         case "ADD_LESSON":
             return state.map(chapter => {
-                // Tìm đúng chapter_id của lesson vừa tạo
                 if (chapter.id === action.payload.chapter_id) {
                     return {
                         ...chapter,
-                        // Thêm lesson mới vào mảng lessons hiện tại (nếu chưa có lessons thì tạo mảng mới)
                         lessons: chapter.lessons ? [...chapter.lessons, action.payload] : [action.payload]
                     }
                 }
                 return chapter;
+            })
+        case "UPDATE_LESSON":
+            return state.map(chapter => {
+                if (chapter.id === action.payload.chapter_id) {
+                    return {
+                        ...chapter,
+                        lessons: action.payload.lessons // Ghi đè lại mảng lessons với thứ tự mới
+                    }
+                }
+                return chapter
             })
         case "DELETE_LESSON":
             return state.map(chapter => {
@@ -53,7 +71,9 @@ const Chapter = ({ course, param }) => {
     const [loading, setLoading] = useState(false);
     const [showChapter, setShowChapter] = useState(false);
     const [showLesson, setShowLesson] = useState(false);
+    const [showModalSortLesson, setShowModalSortLesson] = useState(false);
     const [detailChapter, setDetailChapter] = useState();
+    const [dataLessons, setDataLessons] = useState([]);
 
     const { handleSubmit, register, formState: { errors }, setError, reset } = useForm();
 
@@ -80,6 +100,7 @@ const Chapter = ({ course, param }) => {
         setLoading(false)
     }
 
+    // modal edit chapter
     const handleClose = () => {
         setShowChapter(false);
     }
@@ -88,13 +109,23 @@ const Chapter = ({ course, param }) => {
         setShowChapter(true)
     };
 
-
+    // modal create lesson
     const handleCloseLesson = () => {
         setShowLesson(false);
     }
     const handleShowLesson = () => {
         setShowLesson(true)
     };
+
+    // modal sort lesson
+    const handleCloseModalSortLesson = () => {
+        setShowModalSortLesson(false);
+    }
+    const handleShowModalSortLesson = (lessons) => {
+        setDataLessons(lessons)
+        setShowModalSortLesson(true);
+    }
+
 
     useEffect(() => {
         if (course.chapters) {
@@ -113,6 +144,31 @@ const Chapter = ({ course, param }) => {
                 toast.error(res.message)
             }
         }
+    }
+
+    // sort chapter
+    const handleDragEnd = (result) => {
+        if (!result.destination) return;
+
+        const reorderedItems = Array.from(chapters);
+        const [movedItem] = reorderedItems.splice(result.source.index, 1);
+        reorderedItems.splice(result.destination.index, 0, movedItem);
+
+        dispatch({
+            type: "REORDER_CHAPTERS",
+            payload: reorderedItems
+        });
+        saveOrder(reorderedItems);
+    };
+    const saveOrder = async (updateSortOrder) => {
+        const res = await apiUpdateSortOrderChapter({ dataUpdate: updateSortOrder });
+        if (res.status) {
+            // dispatch({ type: "UPDATE_CHAPTER", payload: updateSortOrder })
+            toast.success(res.message);
+        } else {
+            toast.error(res.message);
+        }
+
     }
 
     return (
@@ -146,57 +202,80 @@ const Chapter = ({ course, param }) => {
                         </div>
                     </form>
 
-                    <Accordion >
-                        {
-                            chapters.map((item, index) => {
-                                return (
-                                    <Accordion.Item key={index} eventKey={index}>
-                                        <Accordion.Header>
-                                            <span className="text-truncate d-block">
-                                                {item.title}
-                                            </span>
-                                        </Accordion.Header>
-                                        <Accordion.Body>
-                                            <div className='row'>
-                                                {item.lessons &&
-                                                    <div className='col-md-12'>
-                                                        <div className="d-flex justify-content-between mb-2 mt-4">
-                                                            <h4 className="h5">Lessons</h4>
-                                                            <a className="h6" href="#" data-discover="true">
-                                                                <strong>Reorder Lessons</strong>
-                                                            </a>
+                    <Accordion>
+                        <DragDropContext onDragEnd={handleDragEnd}>
+                            <Droppable droppableId="list">
+                                {(provided) => (
+                                    <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
+                                        {
+                                            // Chỉ lặp mảng chapters 1 lần duy nhất ở đây
+                                            chapters.map((item, index) => (
+                                                <Draggable key={item.id} draggableId={`${item.id}`} index={index}>
+                                                    {(provided) => (
+                                                        <div
+                                                            ref={provided.innerRef}
+                                                            {...provided.draggableProps}
+                                                            {...provided.dragHandleProps}
+                                                            className="mt-2 border px-3 py-2 bg-white shadow-lg rounded d-flex align-items-center"
+                                                        >
+                                                            <div className="me-2"><FaRegHand /></div>
+                                                            {/* Mỗi item drag được sẽ chứa 1 Accordion.Item tương ứng */}
+                                                            <Accordion.Item eventKey={index} className="w-100">
+                                                                <Accordion.Header>
+                                                                    <span className="text-truncate d-block">
+                                                                        {item.title}
+                                                                    </span>
+                                                                </Accordion.Header>
+
+                                                                <Accordion.Body>
+                                                                    <div className='row'>
+                                                                        {item.lessons?.length > 0 &&
+                                                                            <div className='col-md-12'>
+                                                                                <div className="d-flex justify-content-between mb-2 mt-4">
+                                                                                    <h4 className="h5">Lessons</h4>
+                                                                                    <Link className="h6" onClick={() => handleShowModalSortLesson(item.lessons)}>
+                                                                                        <strong>Reorder Lessons</strong>
+                                                                                    </Link>
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+
+                                                                        <div className="col-md-12">
+                                                                            {
+                                                                                // Đổi tên biến index của lesson thành lessonIndex để không bị trùng với index của chapter
+                                                                                item.lessons && item.lessons.map((lesson, lessonIndex) => (
+                                                                                    <Lesson
+                                                                                        key={lessonIndex}
+                                                                                        lesson={lesson}
+                                                                                        course={course}
+                                                                                        dispatch={dispatch}
+                                                                                    />
+                                                                                ))
+                                                                            }
+                                                                        </div>
+
+                                                                        <div className="col-md-12 mt-3">
+                                                                            <div className="d-flex">
+                                                                                <button onClick={() => handleShow(item)} className="btn btn-primary btn-sm me-1">Update chapter</button>
+                                                                                <button onClick={() => handleDelete(item.id)} className="btn btn-danger btn-sm ">Delete chapter</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </Accordion.Body>
+                                                            </Accordion.Item>
                                                         </div>
-                                                    </div>
-                                                }
-                                                <div className="col-md-12">
-                                                    {
-                                                        item.lessons && item.lessons.map((lesson, index) => {
-                                                            return (
-                                                                <Lesson
-                                                                    key={index}
-                                                                    lesson={lesson}
-                                                                    course={course}
-                                                                    dispatch={dispatch}
-                                                                />
-                                                            )
-                                                        })
-                                                    }
-                                                </div>
-                                                <div className="col-md-12 mt-3">
-                                                    <div className="d-flex">
-                                                        <button onClick={() => handleShow(item)} className="btn btn-primary btn-sm me-1">Update chapter</button>
-                                                        <button onClick={() => handleDelete(item.id)} className="btn btn-danger btn-sm ">Delete chapter</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                )
-                            })
-                        }
+                                                    )}
+                                                </Draggable>
+                                            ))
+                                        }
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
                     </Accordion>
+
+
                 </div>
             </div>
             <UpdateChapter
@@ -209,6 +288,13 @@ const Chapter = ({ course, param }) => {
                 showLesson={showLesson}
                 handleCloseLesson={handleCloseLesson}
                 chapters={chapters}
+                dispatch={dispatch}
+            />
+            <SortLesson
+                showModalSortLesson={showModalSortLesson}
+                handleCloseModalSortLesson={handleCloseModalSortLesson}
+                dataLessons={dataLessons}
+                setDataLessons={setDataLessons}
                 dispatch={dispatch}
             />
         </>

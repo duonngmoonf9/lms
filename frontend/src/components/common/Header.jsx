@@ -1,4 +1,5 @@
 import { Container, Nav, Navbar } from "react-bootstrap"
+import { Link } from "react-router-dom"
 
 const Header = () => {
     return (
@@ -21,7 +22,7 @@ const Header = () => {
                             </div>
                         </Form> */}
                     </Nav>
-                    <a href='/account/my-learning' className="btn btn-primary">My Account</a>
+                    <Link to='/account/my-courses' className="btn btn-primary">My Account</Link>
                 </Navbar.Collapse>
             </Container>
         </Navbar>

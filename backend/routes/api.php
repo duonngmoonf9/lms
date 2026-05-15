@@ -51,6 +51,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/lesson/create', [LessonController::class, 'store']);
     Route::put('/lesson/update/{id}', [LessonController::class, 'update']);
     Route::delete('/lesson/delete/{id}', [LessonController::class, 'destroy']);
-    Route::patch('/lesson/update/sort-order', [LessonController::class, 'sortOrderChapter']);
+    Route::patch('/lesson/update/sort-order', [LessonController::class, 'sortOrderLesson']);
     Route::post('/lesson/upload-video/{id}', [LessonController::class, 'uploadVideo']);
 });

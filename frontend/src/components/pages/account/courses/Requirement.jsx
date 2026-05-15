@@ -58,6 +58,9 @@ const Requirement = () => {
             toast.error("lay requirement that bai");
         }
     }
+    useEffect(() => {
+        getRequirement();
+    }, [])
 
     const handleDelete = async (id) => {
         if (confirm("Ban co muon xoa khong")) {
@@ -93,9 +96,7 @@ const Requirement = () => {
     }
 
 
-    useEffect(() => {
-        getRequirement();
-    }, [])
+
     return (
         <>
             <div className='card border-0 shadow-lg mt-3'>

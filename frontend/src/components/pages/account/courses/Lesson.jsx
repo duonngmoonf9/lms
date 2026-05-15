@@ -3,8 +3,10 @@ import { BsPencilSquare } from "react-icons/bs";
 import { FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { apiDeleteLesson } from "../../../services/api.service";
+import { useEffect } from "react";
 
 const Lesson = ({ course, lesson, dispatch }) => {
+
     const handleDelete = async (id) => {
         if (confirm("Ban co muon xoa khong")) {
             const res = await apiDeleteLesson(id);
