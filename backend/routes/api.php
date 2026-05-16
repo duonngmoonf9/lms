@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/courses/update/{id}', [CourseController::class, 'update']);
     Route::get('/get-meta-data', [CourseController::class, 'metaData']);
     Route::post('/courses/upload-image/{id}', [CourseController::class, 'uploadImage']);
+    Route::patch('/courses/update-status/{id}', [CourseController::class, 'changeStatus']);
 
     //outcome
     Route::get('/outcomes', [OutcomeController::class, 'index']);

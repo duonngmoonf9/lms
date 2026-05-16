@@ -7,7 +7,6 @@ const apiLogin = (data) => {
     const URL_BACKEND = "/api/login";
     return axios.post(URL_BACKEND, data);
 }
-
 const getAccountAPI = () => {
     const URL_BACKEND = "/api/user";
     return axios.get(URL_BACKEND);
@@ -22,7 +21,6 @@ const apiCreateCourse = (data) => {
     const URL_BACKEND = "/api/courses";
     return axios.post(URL_BACKEND, data);
 }
-
 const apiGetCourse = (id) => {
     const URL_BACKEND = "/api/courses/show/" + id;
     return axios.get(URL_BACKEND);
@@ -40,6 +38,10 @@ const apiUploadImage = (id, data, signal) => {
     }
     const URL_BACKEND = "/api/courses/upload-image/" + id;
     return axios.post(URL_BACKEND, data, config);
+}
+const apiChangeStatusCourse = (id, data) => {
+    const URL_BACKEND = "/api/courses/update-status/" + id;
+    return axios.patch(URL_BACKEND, data);
 }
 
 // outcome
@@ -144,5 +146,5 @@ const apiUploadVideo = (id, data, signal) => {
     return axios.post(URL_BACKEND, data, config);
 }
 
-export { apiCreateChapter, apiCreateCourse, apiCreateLesson, apiCreateOutcome, apiCreateRequirement, apiDeleteChapter, apiDeleteLesson, apiDeleteOutcome, apiDeleteRequirement, apiGetChapterOfCourse, apiGetCourse, apiGetLesson, apiGetLessonOfCourse, apiGetMetaData, apiGetOutcomeOfCourse, apiGetRequirementOfCourse, apiLogin, apiRegister, apiUpdateChapterOfCourse, apiUpdateCourse, apiUpdateLessonOfCourse, apiUpdateOutcomeOfCourse, apiUpdateRequirementOfCourse, apiUpdateSortOrderChapter, apiUpdateSortOrderLesson, apiUpdateSortOrderOutcome, apiUpdateSortOrderRequirement, apiUploadImage, apiUploadVideo, getAccountAPI };
+export { apiChangeStatusCourse, apiCreateChapter, apiCreateCourse, apiCreateLesson, apiCreateOutcome, apiCreateRequirement, apiDeleteChapter, apiDeleteLesson, apiDeleteOutcome, apiDeleteRequirement, apiGetChapterOfCourse, apiGetCourse, apiGetLesson, apiGetLessonOfCourse, apiGetMetaData, apiGetOutcomeOfCourse, apiGetRequirementOfCourse, apiLogin, apiRegister, apiUpdateChapterOfCourse, apiUpdateCourse, apiUpdateLessonOfCourse, apiUpdateOutcomeOfCourse, apiUpdateRequirementOfCourse, apiUpdateSortOrderChapter, apiUpdateSortOrderLesson, apiUpdateSortOrderOutcome, apiUpdateSortOrderRequirement, apiUploadImage, apiUploadVideo, getAccountAPI };
 

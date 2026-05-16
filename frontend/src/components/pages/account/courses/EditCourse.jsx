@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Layout from "../../../common/Layout";
 import UserSidebar from "../../../common/UserSidebar";
-import { apiGetCourse, apiGetMetaData, apiUpdateCourse } from "../../../services/api.service";
+import { apiChangeStatusCourse, apiGetCourse, apiGetMetaData, apiUpdateCourse } from "../../../services/api.service";
 import Chapter from "./Chapter";
 import EditCover from "./EditCover";
 import Outcome from "./Outcome";
@@ -18,10 +19,12 @@ const EditCourse = () => {
     const [course, setCourse] = useState([]);
 
     const param = useParams();
-    const { handleSubmit, register, formState: { errors }, setError, reset } = useForm({
+    const { handleSubmit, register, formState: { errors, isLoading }, setError, reset, watch } = useForm({
         defaultValues: async () => {
             const res = await apiGetCourse(param.id);
             if (res.status) {
+                setCourse(res.data);
+
                 // dinh nghia gia tri default khi load
                 reset({
                     title: res.data.title,
@@ -31,13 +34,15 @@ const EditCourse = () => {
                     description: res.data.description,
                     price: res.data.price,
                     cross_price: res.data.cross_price,
+                    status: res.data.status == 1 ? true : false
                 })
-                setCourse(res.data);
             } else {
-
+                return {};
             }
         }
     });
+    const status = watch('status');
+
     const navigate = useNavigate();
 
 
@@ -69,9 +74,22 @@ const EditCourse = () => {
         }
     }
 
+
     useEffect(() => {
         getMetaData();
     }, [])
+
+    if (isLoading) {
+        return (
+            <Layout>
+                <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading course data...</span>
+                    </div>
+                </div>
+            </Layout>
+        );
+    }
     return (
         <Layout>
             <section className='section-4'>
@@ -80,7 +98,33 @@ const EditCourse = () => {
                         <div className='col-md-12 mt-5 mb-3'>
                             <div className='d-flex justify-content-between'>
                                 <h2 className='h3 mb-0 pb-0'>Edit Course</h2>
-                                <Link to='/account/my-courses/create' className='btn btn-primary'>Back</Link>
+                                <div className="d-flex align-content-center">
+
+                                    <Form.Check
+                                        className="align-content-center me-3"
+                                        type="switch"
+                                        id="custom-switch"
+                                        label={status === true ? 'Publish' : 'Unpublish'}
+                                        {...register('status', {
+                                            onChange: async (e) => {
+                                                const isChecked = e.target.checked; // Lấy giá trị true/false khi vừa gạt
+
+                                                // Gọi API
+                                                const res = await apiChangeStatusCourse(course.id, {
+                                                    status: isChecked ? 1 : 0
+                                                });
+
+                                                if (res.status) {
+                                                    toast.success(res.message);
+                                                } else {
+                                                    toast.error(res.message);
+                                                }
+                                            }
+                                        })}
+                                    />
+
+                                    <Link to='/account/my-courses' className='btn btn-primary'>Back</Link>
+                                </div>
                             </div>
                         </div>
                         <div className='col-lg-3 account-sidebar'>

@@ -233,4 +233,37 @@ class CourseController extends Controller
             ], 400);
         }
     }
+
+    public function changeStatus($id, Request $request)
+    {
+        $course = Course::find($id);
+        if (is_null($course)) {
+            return response()->json([
+                "status" => false,
+                "code" => 404,
+                "message" => "course not found",
+            ], 404);
+        }
+
+        try {
+            DB::beginTransaction();
+            $course->update(['status' => $request->status]);
+            $message = $course->status == 1 ? 'change publish successfully' : 'change unpublish successfully';
+            DB::commit();
+            return response()->json([
+                "status" => true,
+                "code" => 200,
+                "data" => $course,
+                "message" => $message,
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("message : " . $e->getMessage() . "----------------- line: " . $e->getLine());
+            return response()->json([
+                "status" => false,
+                "code" => 401,
+                "message" => "Update status course error",
+            ], 401);
+        }
+    }
 }
